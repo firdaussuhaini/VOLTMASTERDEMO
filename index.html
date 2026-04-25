@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOLTMASTER PRO v1.2 | DEMO</title>
+<style>
+:root { --bg:#020617; --card:#111827; --accent:#22c55e; --text:#94a3b8; --border:#334155; --pro:#f59e0b; }
+body{margin:0;font-family: Arial, sans-serif;background:var(--bg);color:white;padding-bottom:50px;}
+header{text-align:center;padding:25px;background:#0f172a;border-bottom:4px solid var(--pro);}
+header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+header p { margin: 5px 0 0 0; color: var(--pro); font-weight: bold; font-size: 0.9rem; text-transform: uppercase;}
+.container{max-width:1100px;margin:auto;padding:10px;}
+.card{background:var(--card);padding:15px;border-radius:12px;margin-top:15px;border:1px solid var(--border);}
+h3{margin-top:0;color:var(--accent);font-size:1rem;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;}
+.grid{display:grid;grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));gap:10px;margin-bottom:10px;}
+input,select{width:100%;padding:8px;background:#0f172a;color:white;border:1px solid var(--border);border-radius:4px;box-sizing: border-box;font-size:0.85rem;}
+button{width:100%;padding:15px;margin-top:15px;background:var(--accent);border:none;font-weight:bold;cursor:pointer;border-radius:4px;font-size:1rem;color:#020617;}
+.result{white-space:pre-wrap;margin-top:20px;background:#000;padding:25px;display:none;border-radius:8px;font-family: 'Courier New', monospace;font-size:0.85rem;border:1px solid var(--pro);line-height:1.4;position:relative;}
+.result::after { content: "DEMO - NOT FOR SUBMISSION"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 2.5rem; color: rgba(245, 158, 11, 0.1); pointer-events: none; }
+label{font-size:0.7rem;color:var(--text);display:block;margin-bottom:3px;}
+.settings-panel { background: #1e293b; padding: 15px; border-radius: 8px; border-left: 4px solid var(--pro); margin-top: 15px; opacity: 0.6; }
+.whatsapp-btn { background:#25d366; color:white; border:none; padding:15px; width:100%; font-weight:bold; border-radius:4px; margin-top:10px; cursor:pointer; font-size:1rem; text-decoration:none; display:inline-block; text-align:center; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>VOLTMASTER PRO <span style="background:var(--pro); color:#000; padding:2px 5px; border-radius:3px; font-size:0.6rem;">DEMO MODE</span></h1>
+    <p>Electrical Design & Compliance Preview</p>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h3>1. Project Details</h3>
+        <div class="grid">
+            <div><label>Company Name</label><input id="compName" placeholder="Enter Company Name" type="text"></div>
+            <div><label>Project Ref</label><input id="projRef" placeholder="e.g. PROJ-001" type="text"></div>
+        </div>
+    </div>
+
+    <div class="settings-panel">
+        <h3 style="color:var(--pro); border-color:var(--pro)">Pro Setting: Price Rates (LOCKED)</h3>
+        <div class="grid">
+            <div><label>Light Rate</label><input value="85" disabled></div>
+            <div><label>Socket Rate</label><input value="160" disabled></div>
+            <div><label>Heater Rate</label><input value="280" disabled></div>
+            <div><label>Outdoor Rate</label><input value="120" disabled></div>
+        </div>
+        <small style="color:var(--pro)">* Upgrade to Pro to customize your own RM rates.</small>
+    </div>
+
+    <div class="card">
+        <h3>2. Load Quantities</h3>
+        <div class="grid">
+            <div><label>Lighting</label><input id="qL" value="10" type="number"></div>
+            <div><label>Ceiling Fan</label><input id="qF" value="5" type="number"></div>
+            <div><label>Socket Pts</label><input id="qS" value="12" type="number"></div>
+            <div><label>Water Heater</label><input id="qWH" value="1" type="number"></div>
+            <div><label>Outdoor Light</label><input id="qOL" value="2" type="number"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3. Technical Preview</h3>
+        <div class="grid">
+            <div>
+                <label>Supply</label>
+                <select id="phaseType"><option value="1">1-Phase</option><option value="3">3-Phase</option></select>
+            </div>
+            <div><label>Wiring Style</label><select id="wireStyle"><option value="surface">Surface</option><option value="concealed">Concealed</option></select></div>
+        </div>
+        <button onclick="calcDemo()">PREVIEW CALCULATION</button>
+        
+        <div id="out" class="result"></div>
+        
+        <div id="cta" style="display:none; text-align:center;">
+            <p style="color:var(--pro); margin-top:15px; font-weight:bold;">PDF Export & Earth Sizing Locked.</p>
+            <a href="https://wa.me/60194215250?text=Hello%20Firdaus,%20I%20want%20to%20buy%20the%20VoltMaster%20Pro%20Full%20Version%20v1.2" class="whatsapp-btn">
+                BUY FULL VERSION (WHATSAPP)
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcDemo() {
+    const getV = (id) => parseFloat(document.getElementById(id).value) || 0;
+    const p = getV('phaseType');
+    
+    // Simple Preview Logic
+    const tcl = (getV('qL')*15) + (getV('qF')*75) + (getV('qS')*250) + (getV('qWH')*3000) + (getV('qOL')*30);
+    const md = tcl * 0.8;
+    
+    let report = `[DEMO MODE - PREVIEW ONLY]
+-------------------------------------------
+PROJECT : ${document.getElementById('compName').value || "SAMPLE"}
+SUPPLY  : ${p}-Phase System
+-------------------------------------------
+LOAD PREVIEW:
+- Lighting/Fans : ${getV('qL') + getV('qF')} Pts
+- Power Sockets : ${getV('qS')} Pts
+- Water Heaters : ${getV('qWH')} Pts
+- Outdoor Lights: ${getV('qOL')} Pts
+
+Total TCL (Est): ${(tcl/1000).toFixed(2)} kW
+Total MD (Est) : ${(md/1000).toFixed(2)} kW
+-------------------------------------------
+UNLOCKED IN FULL VERSION:
+[✓] Custom RM Pricing Logic
+[✓] Automatic Earth Cable Sizing
+[✓] DB Size Recommendations
+[✓] Professional 2-Page PDF Export
+[✓] Site Disclaimer Clause
+-------------------------------------------`;
+
+    document.getElementById('out').style.display = "block";
+    document.getElementById('out').innerText = report;
+    document.getElementById('cta').style.display = "block";
+}
+</script>
+</body>
+</html>
